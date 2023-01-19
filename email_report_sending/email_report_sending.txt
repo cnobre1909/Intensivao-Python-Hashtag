@@ -1,0 +1,76 @@
+import pyautogui
+import time
+import pyperclip
+import pandas as pd
+import pyperclip
+
+#parte 1 - abrindo o navegador e email
+
+pyautogui.PAUSE = 1
+pyautogui.alert("Vai começar, aperte OK e não mexa em nada")
+
+#abrir navegador novo e entrar no chrome
+pyautogui.press("winleft")
+pyautogui.write("chrome")
+pyautogui.press("enter")
+
+#abrir uma nova aba
+pyautogui.hotkey('ctrl', 't')
+
+#abrir drive
+link = "https://drive.google.com/drive/folders/1mhXZ3JPAnekXP_4vX7Z_sJj35VWqayaR?usp=sharing"
+pyperclip.copy(link)
+pyautogui.hotkey("ctrl", "v")
+pyautogui.press("enter")
+time.sleep(5)
+
+#baixar base de dados atualizada (aqui irá depender das dimensões do monitor utilizado)
+pyautogui.click(935, 694, clicks=2)
+pyautogui.click(2028, 895)
+pyautogui.click(3306, 406)
+pyautogui.click(2880, 1489)
+time.sleep(10)
+
+
+
+#parte 2 - abrindo a base de dados e realizando alguns cálculos
+
+df = pd.read_excel("C://Users/joaop/Downloads/Vendas - Dez.xlsx")
+display(df)
+faturamento = df['Valor Final'].sum()
+qtde_produtos = df['Quantidade'].sum()
+
+
+
+#parte3 - anexando arquivo e enviando email
+
+# abrir aba gmail
+pyautogui.hotkey('ctrl', 't')
+pyautogui.write("mail.google.com")
+pyautogui.press('enter')
+time.sleep(5)
+
+#clicar em escrever email
+pyautogui.click(307, 506)
+
+#preencher informações do e-mail
+pyautogui.write('pythonimpressionador+diretoria@gmail.com')
+pyautogui.press('tab')
+pyautogui.press('tab')
+assunto = "Relatório de Vendas de Ontem"
+pyperclip.copy(assunto)
+pyautogui.hotkey("ctrl", 'v')
+pyautogui.press("tab")
+texto = f"""
+Prezados, bom dia
+
+O faturamento de ontem foi de: R${faturamento:,.2f}
+A quantidade de produtos foi de: {qtde_produtos:,}
+
+Atenciosamente,
+Caio"""
+pyperclip.copy(texto)
+pyautogui.hotkey("ctrl", 'v')
+
+#enviar e-mail
+pyautogui.hotkey('ctrl', 'enter')
