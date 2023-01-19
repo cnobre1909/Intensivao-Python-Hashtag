@@ -1,0 +1,28 @@
+import pandas as pd
+import plotly.express as px
+
+df = pd.read_csv("telecom_users.csv")
+df = df.drop(["Unnamed: 0"], axis=1)
+display(df)
+
+# transformando coluna que deveria ser número e está como texto em número
+df["TotalGasto"] = pd.to_numeric(df["TotalGasto"], errors="coerce")
+
+# remover a coluna que está 100% vazia
+df = df.dropna(how='all', axis=1)
+
+# remover a linha que tem um item vazio
+df = df.dropna()
+
+display(df['Churn'].value_counts())
+display(df['Churn'].value_counts(normalize=True).map('{:.1%}'.format))
+
+#pltando dados tratados
+for coluna in df:
+    if coluna != "IDCliente":
+        # criar a figura
+        fig = px.histogram(df, x=coluna, color="Churn")
+        # exibir a figura
+        fig.show()
+        display(df.pivot_table(index="Churn", columns=coluna, aggfunc='count')["IDCliente"])
+    
